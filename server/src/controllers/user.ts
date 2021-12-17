@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+import user from '../models/user';
+import { IUser } from '../interfaces/user';
+import mongoose from 'mongoose';
 
 const validate = (req: Request, res: Response, next: NextFunction) => {};
 
-const register = (req: Request, res: Response, next: NextFunction) => {};
+const register = async (req: Request, res: Response, next: NextFunction) => {
+    var id = new mongoose.Types.ObjectId;
+    const newUser: <IUser> = new user(req.body);
+};
 
 const login = (req: Request, res: Response, next: NextFunction) => {};
 
