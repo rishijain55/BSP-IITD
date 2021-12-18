@@ -1,4 +1,6 @@
 import { Document } from 'mongoose';
+import IComment from './comment';
+import IPost from './post';
 
 export interface UserInput {
     email: string;
@@ -8,9 +10,15 @@ export interface UserInput {
     username: string;
 }
 
-export interface IUser extends UserInput, Document {
+export default interface IUser extends UserInput, Document {
+    year?: number;
+    department?: string;
     uid: string;
     createdAt: Date;
     updatedAt: Date;
+    ownPosts: IPost[];
+    likedPosts: IPost[];
+    comments: IComment[];
+    bookmarks: string;
     comparePassword(candidatePassword: string): Promise<Boolean>;
 }

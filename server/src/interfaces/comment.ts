@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 
 export default interface IComment extends Document {
-    uid: string;
+    username: string;
     image?: string;
     content: string;
 }
