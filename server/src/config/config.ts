@@ -7,21 +7,20 @@ const MONGO_OPTIONS = {
     useNewUrlParser: true,
     socketTimeoutMS: 30000,
     keepAlive: true,
-    poolSize: 50,
     autoIndex: false,
     retryWrites: false
 };
 
-const MONGO_USERNAME = process.env.MONGO_USERNAME || 'superuser';
-const MONGO_PASSWORD = process.env.MONGO_USERNAME || 'password1';
-const MONGO_HOST = process.env.MONGO_URL || ``;
+const MONGO_USERNAME = process.env.MONGO_USERNAME;
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+const MONGO_HOST = process.env.MONGO_URL;
 
 const MONGO = {
     host: MONGO_HOST,
     password: MONGO_PASSWORD,
     username: MONGO_USERNAME,
     options: MONGO_OPTIONS,
-    url: `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}`
+    url: `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}?retryWrites=true&w=majority`
 };
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
@@ -34,7 +33,12 @@ const SERVER = {
 
 const config = {
     mongo: MONGO,
-    server: SERVER
+    server: SERVER,
+    saltWorkFactor: 10,
+    accessTokenTtl: '15m',
+    refreshTokenTtl: '1y',
+    publicKey: ``,
+    privateKey: ``
 };
 
 export default config;

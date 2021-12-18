@@ -1,3 +1,9 @@
+// import express from 'express';
+
+// const app = express();
+// app.listen(3000, () => {
+//     console.log('App is running');
+// });
 import http from 'http';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import logging from './config/logging';
@@ -7,7 +13,6 @@ import mongoose from 'mongoose';
 const router: Express = express();
 
 const httpServer = http.createServer(router);
-
 mongoose
     .connect(config.mongo.url, config.mongo.options)
     .then((result) => {

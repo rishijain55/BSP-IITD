@@ -12,4 +12,5 @@ export interface IUser extends UserInput, Document {
     uid: string;
     createdAt: Date;
     updatedAt: Date;
+    comparePassword(candidatePassword: string): Promise<Boolean>;
 }
