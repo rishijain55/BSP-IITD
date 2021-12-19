@@ -8,11 +8,11 @@ export interface UserInput {
     password: string;
     hostel: string;
     username: string;
+    year: number;
+    department: number;
 }
 
 export default interface IUser extends UserInput, Document {
-    year?: number;
-    department?: string;
     uid: string;
     createdAt: Date;
     updatedAt: Date;

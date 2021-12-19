@@ -6,34 +6,18 @@
 // });
 import http from 'http';
 import express, { Express, NextFunction, Request, Response } from 'express';
-import logging from './config/logging';
+import logging from './utils/logging';
 import config from './config/config';
-import mongoose from 'mongoose';
+import connect from './utils/connect';
+import routes from './routes';
 
 const router: Express = express();
+router.use(express.urlencoded({ extended: true }));
+router.use(express.json());
 
-const httpServer = http.createServer(router);
-mongoose
-    .connect(config.mongo.url, config.mongo.options)
-    .then((result) => {
-        logging.info('Mongo Connected');
-    })
-    .catch((error) => {
-        logging.error(error);
-    });
+// const httpServer = http.createServer(router);
 
-/** Log the request */
-router.use((req, res, next) => {
-    logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
-
-    res.on('finish', () => {
-        logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
-    });
-
-    next();
-});
-
-/** API Access Policies  */
+/**API Access Policies*/
 router.use((req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -46,17 +30,20 @@ router.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-router.use(express.urlencoded({ extended: true }));
-router.use(express.json());
-
-/** Error handling */
-router.use((req: Request, res: Response, next: NextFunction) => {
-    const error = new Error('Not found');
-
-    res.status(404).json({
-        message: error.message
-    });
+/** Listen */
+router.listen(config.server.port, async () => {
+    logging.info(`Server is running ${config.server.hostname}:${config.server.port}`);
+    await connect();
+    routes(router);
 });
 
-/** Listen */
-httpServer.listen(config.server.port, () => logging.info(`Server is running ${config.server.hostname}:${config.server.port}`));
+/** Log the request */
+router.use((req, res, next) => {
+    logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+
+    res.on('finish', () => {
+        logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+    });
+
+    next();
+});
