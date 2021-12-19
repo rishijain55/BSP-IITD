@@ -10,7 +10,7 @@ export interface IReaction {
 export default interface IPost extends Document {
     title: string;
     category: string;
-    username: IUSer;
+    user: IUSer['_id'];
     content: string;
     picture?: string;
     comments: IComment[];

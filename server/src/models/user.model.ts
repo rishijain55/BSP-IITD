@@ -3,7 +3,8 @@ import mongoose, { Schema } from 'mongoose';
 import IUser from '../interfaces/user';
 import bcrypt from 'bcrypt';
 import config from '../config/config';
-import { CommentSchema, PostSchema } from './post.model';
+import CommentSchema from '../schema/comment.schema';
+import PostSchema from '../schema/post.schema';
 
 // const Hostels: string[] = ['Kailash', 'Himadri', 'Kumaon', 'Girnar', 'Zanskar', 'Vindhyachal', 'Udaigiri', 'Satpura', 'Aravali', 'Nilgiri', 'Jwalamukhi', 'Karakoram', 'Shivalik'];
 
@@ -33,6 +34,7 @@ const UserSchema: Schema = new Schema(
         },
         hostel: {
             type: String,
+            enum: ['Kailash', 'Himadri', 'Kumaon', 'Girnar', 'Zanskar', 'Vindhyachal', 'Udaigiri', 'Satpura', 'Aravali', 'Nilgiri', 'Jwalamukhi', 'Karakoram', 'Shivalik'],
             required: true
         },
         password: {
@@ -45,7 +47,17 @@ const UserSchema: Schema = new Schema(
         },
         dept: {
             type: String,
+            enum: ['AM1', 'BB1', 'CE1', 'CH1', 'CH7', 'CS1', 'CS5', 'EE1', 'EE3', 'ES1', 'MS1', 'ME1', 'ME2', 'MT1', 'MT6', 'PH1', 'TT1'],
             required: true
+        },
+        status: {
+            type: String,
+            enum: ['Pending', 'Active'],
+            default: 'Pending'
+        },
+        confirmationCode: {
+            type: String,
+            unique: true
         },
         ownPosts: {
             type: [PostSchema]
