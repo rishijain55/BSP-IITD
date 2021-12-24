@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: white;
 }
 
 .App-logo {
@@ -35,4 +36,29 @@
   to {
     transform: rotate(360deg);
   }
+}
+/* noticeboard */
+.notice-board {
+  width: 421px;
+  background: #f2f2f2;
+  border-radius: 25px;
+  text-align: left;
+  padding: 24px 34px;
+}
+.notice-board a {
+  color: #116530;
+}
+.board-item-container a {
+  margin-left: 350px;
+  color: #6c6b6b;
+}
+.board-item-container h3 {
+  color: #6c6b6b;
+}
+.board-item-container {
+  height: auto;
+  border-bottom: 1px solid #e7d9d9;
+}
+.board-item-container p {
+  color: black;
 }
