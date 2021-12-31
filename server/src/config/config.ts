@@ -11,9 +11,9 @@ const MONGO_OPTIONS = {
     retryWrites: false
 };
 
-const MONGO_USERNAME = process.env.MONGO_USERNAME;
-const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
-const MONGO_HOST = process.env.MONGO_URL;
+const MONGO_USERNAME = process.env.MONGO_USERNAME || 'abc';
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD || 'abc';
+const MONGO_HOST = process.env.MONGO_URL || 'abc';
 
 const MONGO = {
     host: MONGO_HOST,
@@ -31,14 +31,19 @@ const SERVER = {
     port: SERVER_PORT
 };
 
+const SENDGRID = {
+    user: process.env.SENDGRID_USERNAME,
+    password: process.env.SENDGRID_PASSWORD
+};
+
 const config = {
+    sessionkey: process.env.SESSION_SECRET || 'secretkey',
     mongo: MONGO,
+    sendgrid: SENDGRID,
     server: SERVER,
     saltWorkFactor: 10,
     accessTokenTtl: '15m',
-    refreshTokenTtl: '1y',
-    publicKey: ``,
-    privateKey: ``
+    refreshTokenTtl: '1y'
 };
 
 export default config;

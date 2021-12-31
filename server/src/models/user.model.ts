@@ -1,14 +1,15 @@
 import { NextFunction } from 'express';
 import mongoose, { Schema } from 'mongoose';
-import IUser from '../interfaces/user';
+import IUser, { AuthToken } from '../interfaces/user';
 import bcrypt from 'bcrypt';
 import config from '../config/config';
 import CommentSchema from '../schema/comment.schema';
 import PostSchema from '../schema/post.schema';
+import crypto from 'crypto';
 
 // const Hostels: string[] = ['Kailash', 'Himadri', 'Kumaon', 'Girnar', 'Zanskar', 'Vindhyachal', 'Udaigiri', 'Satpura', 'Aravali', 'Nilgiri', 'Jwalamukhi', 'Karakoram', 'Shivalik'];
 
-const UserSchema: Schema = new Schema(
+const UserSchema: Schema = new Schema<IUser>(
     {
         uid: {
             type: String,
@@ -16,83 +17,84 @@ const UserSchema: Schema = new Schema(
         },
         name: {
             type: String,
-            required: true,
             trim: true,
             minlength: 3
         },
         email: {
             type: String,
-            required: true,
             unique: true
+        },
+        password: {
+            type: String
         },
         username: {
             type: String,
-            required: true,
             unique: true,
             minlength: 3,
             maxlength: 20
         },
+        year: {
+            type: Number
+        },
+        department: {
+            type: String,
+            enum: ['AM1', 'BB1', 'CE1', 'CH1', 'CH7', 'CS1', 'CS5', 'EE1', 'EE3', 'ES1', 'MS1', 'ME1', 'ME2', 'MT1', 'MT6', 'PH1', 'TT1']
+        },
         hostel: {
             type: String,
-            enum: ['Kailash', 'Himadri', 'Kumaon', 'Girnar', 'Zanskar', 'Vindhyachal', 'Udaigiri', 'Satpura', 'Aravali', 'Nilgiri', 'Jwalamukhi', 'Karakoram', 'Shivalik'],
-            required: true
+            enum: ['Kailash', 'Himadri', 'Kumaon', 'Girnar', 'Zanskar', 'Vindhyachal', 'Udaigiri', 'Satpura', 'Aravali', 'Nilgiri', 'Jwalamukhi', 'Karakoram', 'Shivalik']
         },
-        password: {
-            type: String,
-            required: true
-        },
-        year: {
-            type: Number,
-            required: true
-        },
-        dept: {
-            type: String,
-            enum: ['AM1', 'BB1', 'CE1', 'CH1', 'CH7', 'CS1', 'CS5', 'EE1', 'EE3', 'ES1', 'MS1', 'ME1', 'ME2', 'MT1', 'MT6', 'PH1', 'TT1'],
-            required: true
-        },
-        status: {
-            type: String,
-            enum: ['Pending', 'Active'],
-            default: 'Pending'
-        },
-        confirmationCode: {
-            type: String,
-            unique: true
-        },
+        passwordResetExpires: String,
+        passwordResetToken: String,
         ownPosts: {
-            type: [PostSchema]
+            type: [mongoose.Types.ObjectId]
         },
         likedPosts: {
-            type: [PostSchema]
+            type: [mongoose.Types.ObjectId]
         },
         comments: {
-            type: [CommentSchema]
+            type: [mongoose.Types.ObjectId]
         },
         bookmarks: {
-            type: String
-        }
+            type: [mongoose.Types.ObjectId]
+        },
+        tokens: Array
     },
     {
         timestamps: true
     }
 );
 
-UserSchema.pre('save', async function (next: NextFunction) {
+type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => void) => void;
+
+//Password Hash MiddleWare
+UserSchema.pre('save', function save(next: NextFunction) {
     let user = this as IUser;
     if (!user.isModified('password')) {
         return next;
     }
 
-    const salt = await bcrypt.genSalt(config.saltWorkFactor);
-    const hash = await bcrypt.hashSync(user.password, salt);
-    user.password = hash;
-    return next();
+    bcrypt.genSalt(config.saltWorkFactor, (err, salt) => {
+        if (err) {
+            return next(err);
+        }
+        bcrypt.hash(user.password, salt, (err: mongoose.Error | undefined, hash) => {
+            if (err) {
+                return next(err);
+            }
+            user.password = hash;
+            next();
+        });
+    });
 });
 
-UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<Boolean> {
-    const user = this as IUser;
-    return bcrypt.compare(candidatePassword, user.password).catch((error) => false);
+const comparePassword: comparePasswordFunction = (candidatePassword, cb) => {
+    bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error | undefined, isMatch: boolean) => {
+        cb(err, isMatch);
+    });
 };
+
+UserSchema.methods.comparePassword = comparePassword;
 
 const UserModel = mongoose.model<IUser>('User', UserSchema);
 

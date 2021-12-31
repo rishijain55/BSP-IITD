@@ -13,6 +13,6 @@ export default interface IPost extends Document {
     user: IUSer['_id'];
     content: string;
     picture?: string;
-    comments: IComment[];
+    comments: IComment['_id'];
     reactions: IReaction[];
 }
