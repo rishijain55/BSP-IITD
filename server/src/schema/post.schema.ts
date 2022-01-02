@@ -20,7 +20,7 @@ const PostSchema: Schema = new Schema({
         type: String
     },
     comments: {
-        type: [CommentSchema]
+        type: [Schema.Types.ObjectId]
     },
     reactions: {
         type: [ReactionSchema]
