@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import CommentSchema from './comment.schema';
 import ReactionSchema from './reaction.schema';
 
@@ -19,9 +19,12 @@ const PostSchema: Schema = new Schema({
     picture: {
         type: String
     },
-    comments: {
-        type: [Schema.Types.ObjectId]
-    },
+    comments: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'Comment'
+        }
+    ],
     reactions: {
         type: [ReactionSchema]
     }

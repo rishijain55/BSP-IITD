@@ -46,18 +46,30 @@ const UserSchema: Schema = new Schema<IUser>(
         },
         passwordResetExpires: String,
         passwordResetToken: String,
-        ownPosts: {
-            type: [mongoose.Types.ObjectId]
-        },
-        likedPosts: {
-            type: [mongoose.Types.ObjectId]
-        },
-        comments: {
-            type: [mongoose.Types.ObjectId]
-        },
-        bookmarks: {
-            type: [mongoose.Types.ObjectId]
-        },
+        ownPosts: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Post'
+            }
+        ],
+        likedPosts: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Post'
+            }
+        ],
+        comments: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Comment'
+            }
+        ],
+        bookmarks: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Post'
+            }
+        ],
         tokens: Array
     },
     {
